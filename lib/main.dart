@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import 'web_helpers/download_helper.dart'
     if (dart.library.html) 'web_helpers/download_helper_web.dart';
 import 'web_helpers/url_helper.dart'
@@ -314,17 +312,16 @@ class _PortfolioPageState extends State<PortfolioPage>
     );
   }
 
-  Future<void> _copyValue(String label, String value) async {
-    await Clipboard.setData(ClipboardData(text: value));
-    if (!mounted) {
-      return;
-    }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$label copied to clipboard'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+  void _openEmail() {
+    openExternalUrl('mailto:abdullah.ibrahim8855@gmail.com');
+  }
+
+  void _openPhone() {
+    openExternalUrl('tel:+201158861697');
+  }
+
+  void _openGitHub() {
+    openExternalUrl('https://github.com/abdallah011588');
   }
 
   @override
@@ -359,6 +356,7 @@ class _PortfolioPageState extends State<PortfolioPage>
                       child: _TopBar(
                         isDesktop: isDesktop,
                         onSelectSection: _scrollTo,
+                        onOpenGitHub: _openGitHub,
                         onDownloadCv: () {
                           downloadFile(
                             url:
@@ -382,13 +380,9 @@ class _PortfolioPageState extends State<PortfolioPage>
                         _HeroSection(
                           isDesktop: isDesktop,
                           onNavigate: _scrollTo,
-                          onCopyEmail:
-                              () => _copyValue(
-                                'Email',
-                                'abdullah.ibrahim8855@gmail.com',
-                              ),
-                          onCopyPhone:
-                              () => _copyValue('Phone', '+201158861697'),
+                          onOpenEmail: _openEmail,
+                          onOpenPhone: _openPhone,
+                          onOpenGitHub: _openGitHub,
                           onDownloadCv: () {
                             downloadFile(
                               url:
@@ -438,18 +432,9 @@ class _PortfolioPageState extends State<PortfolioPage>
                               'Open to Flutter roles, freelance builds, and product teams that care about quality.',
                           child: _ContactSection(
                             isDesktop: isDesktop,
-                            onCopyEmail:
-                                () => _copyValue(
-                                  'Email',
-                                  'abdullah.ibrahim8855@gmail.com',
-                                ),
-                            onCopyPhone:
-                                () => _copyValue('Phone', '+201158861697'),
-                            onCopyGitHub:
-                                () => _copyValue(
-                                  'GitHub',
-                                  'https://github.com/abdallah011588',
-                                ),
+                            onOpenEmail: _openEmail,
+                            onOpenPhone: _openPhone,
+                            onOpenGitHub: _openGitHub,
                           ),
                         ),
                         const SizedBox(height: 28),
@@ -472,11 +457,13 @@ class _TopBar extends StatelessWidget {
   const _TopBar({
     required this.isDesktop,
     required this.onSelectSection,
+    required this.onOpenGitHub,
     required this.onDownloadCv,
   });
 
   final bool isDesktop;
   final ValueChanged<String> onSelectSection;
+  final VoidCallback onOpenGitHub;
   final VoidCallback onDownloadCv;
 
   @override
@@ -484,9 +471,14 @@ class _TopBar extends StatelessWidget {
     final navItems = ['About', 'Experience', 'Projects', 'Skills', 'Contact'];
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+      margin: const EdgeInsets.only(top: 12, bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xCC0D1117),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xE61B222C), Color(0xD90D1117)],
+        ),
         borderRadius: BorderRadius.circular(28),
         border: Border.all(color: const Color(0x26F0F6FC)),
         boxShadow: const [
@@ -499,19 +491,42 @@ class _TopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
-                Text(
-                  'Abdullah Ibrahim Mokhtar',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: onOpenGitHub,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 2),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Abdullah Ibrahim Mokhtar',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Flutter Developer',
+                          style: TextStyle(color: Color(0xFF8B949E)),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                SizedBox(height: 2),
-                Text(
-                  'Flutter Developer',
-                  style: TextStyle(color: Color(0xFF8B949E)),
-                ),
+                if (isDesktop)
+                  const _StatusPill(
+                    text: 'Available for Flutter roles',
+                    color: Color(0xFF2EA043),
+                  ),
               ],
             ),
           ),
@@ -521,14 +536,25 @@ class _TopBar extends StatelessWidget {
               children:
                   navItems
                       .map(
-                        (item) => TextButton(
-                          onPressed: () => onSelectSection(item),
-                          child: Text(item),
+                        (item) => _NavPillButton(
+                          label: item,
+                          onTap: () => onSelectSection(item),
                         ),
                       )
                       .toList(),
             ),
           const SizedBox(width: 10),
+          IconButton(
+            onPressed: onOpenGitHub,
+            tooltip: 'Open GitHub',
+            style: IconButton.styleFrom(
+              backgroundColor: const Color(0xFF161B22),
+              foregroundColor: const Color(0xFFF0F6FC),
+              side: const BorderSide(color: Color(0xFF30363D)),
+            ),
+            icon: const Icon(Icons.code_rounded),
+          ),
+          const SizedBox(width: 8),
           FilledButton(
             onPressed: onDownloadCv,
             style: FilledButton.styleFrom(
@@ -547,16 +573,18 @@ class _HeroSection extends StatelessWidget {
   const _HeroSection({
     required this.isDesktop,
     required this.onNavigate,
-    required this.onCopyEmail,
-    required this.onCopyPhone,
+    required this.onOpenEmail,
+    required this.onOpenPhone,
+    required this.onOpenGitHub,
     required this.onDownloadCv,
     this.animation,
   });
 
   final bool isDesktop;
   final ValueChanged<String> onNavigate;
-  final VoidCallback onCopyEmail;
-  final VoidCallback onCopyPhone;
+  final VoidCallback onOpenEmail;
+  final VoidCallback onOpenPhone;
+  final VoidCallback onOpenGitHub;
   final VoidCallback onDownloadCv;
   final Animation<double>? animation;
 
@@ -568,7 +596,9 @@ class _HeroSection extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: const Color(0xFF161B22),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF111D2E), Color(0xFF161B22)],
+            ),
             borderRadius: BorderRadius.circular(999),
             border: Border.all(color: const Color(0x2658A6FF)),
           ),
@@ -593,6 +623,28 @@ class _HeroSection extends StatelessWidget {
           child: const Text(
             'I build polished mobile applications for iOS and Android, with hands-on experience in social platforms, e-commerce, booking, delivery, and real-time communication products.',
           ),
+        ),
+        const SizedBox(height: 18),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            _ContactChip(
+              icon: Icons.alternate_email_rounded,
+              text: 'Email Me',
+              onTap: onOpenEmail,
+            ),
+            _ContactChip(
+              icon: Icons.call_outlined,
+              text: 'Call Me',
+              onTap: onOpenPhone,
+            ),
+            _ContactChip(
+              icon: Icons.code_rounded,
+              text: 'My GitHub',
+              onTap: onOpenGitHub,
+            ),
+          ],
         ),
         const SizedBox(height: 26),
         Wrap(
@@ -646,8 +698,9 @@ class _HeroSection extends StatelessWidget {
 
     final heroSide = _GitHubInspiredPanel(
       animation: animation ?? kAlwaysDismissedAnimation,
-      onCopyEmail: onCopyEmail,
-      onCopyPhone: onCopyPhone,
+      onOpenEmail: onOpenEmail,
+      onOpenPhone: onOpenPhone,
+      onOpenGitHub: onOpenGitHub,
     );
 
     return Container(
@@ -668,7 +721,61 @@ class _HeroSection extends StatelessWidget {
           ),
         ],
       ),
-      child:
+      child: Stack(
+        children: [
+          Positioned(
+            top: -70,
+            left: -60,
+            child: Container(
+              width: 240,
+              height: 240,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Color(0x3358A6FF),
+                    Color(0x1158A6FF),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: -80,
+            bottom: -100,
+            child: Container(
+              width: 320,
+              height: 320,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Color(0x22A371F7),
+                    Color(0x10A371F7),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(36),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white.withValues(alpha: 0.03),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
           isDesktop
               ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -682,6 +789,8 @@ class _HeroSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [heroText, const SizedBox(height: 20), heroSide],
               ),
+        ],
+      ),
     );
   }
 }
@@ -1048,22 +1157,26 @@ class _SkillsSection extends StatelessWidget {
 class _ContactSection extends StatelessWidget {
   const _ContactSection({
     required this.isDesktop,
-    required this.onCopyEmail,
-    required this.onCopyPhone,
-    required this.onCopyGitHub,
+    required this.onOpenEmail,
+    required this.onOpenPhone,
+    required this.onOpenGitHub,
   });
 
   final bool isDesktop;
-  final VoidCallback onCopyEmail;
-  final VoidCallback onCopyPhone;
-  final VoidCallback onCopyGitHub;
+  final VoidCallback onOpenEmail;
+  final VoidCallback onOpenPhone;
+  final VoidCallback onOpenGitHub;
 
   @override
   Widget build(BuildContext context) {
     final left = Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF161B22),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF161B22), Color(0xFF10161E)],
+        ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: const Color(0x26F0F6FC)),
       ),
@@ -1097,24 +1210,34 @@ class _ContactSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _ContactActionRow(
+            icon: Icons.email_outlined,
             label: 'Email',
             value: 'abdullah.ibrahim8855@gmail.com',
-            onTap: onCopyEmail,
+            actionLabel: 'Open',
+            onTap: onOpenEmail,
           ),
           const SizedBox(height: 12),
           _ContactActionRow(
+            icon: Icons.phone_outlined,
             label: 'Phone',
             value: '+20 115 886 1697',
-            onTap: onCopyPhone,
+            actionLabel: 'Call',
+            onTap: onOpenPhone,
           ),
           const SizedBox(height: 12),
           _ContactActionRow(
+            icon: Icons.code_rounded,
             label: 'GitHub',
             value: 'github.com/abdallah011588',
-            onTap: onCopyGitHub,
+            actionLabel: 'Visit',
+            onTap: onOpenGitHub,
           ),
           const SizedBox(height: 12),
-          const _ContactActionRow(label: 'Location', value: 'Cairo, Egypt'),
+          const _ContactActionRow(
+            icon: Icons.location_on_outlined,
+            label: 'Location',
+            value: 'Cairo, Egypt',
+          ),
         ],
       ),
     );
@@ -1336,13 +1459,17 @@ class _ContactChip extends StatelessWidget {
 
 class _ContactActionRow extends StatelessWidget {
   const _ContactActionRow({
+    required this.icon,
     required this.label,
     required this.value,
+    this.actionLabel = 'Open',
     this.onTap,
   });
 
+  final IconData icon;
   final String label;
   final String value;
+  final String actionLabel;
   final VoidCallback? onTap;
 
   @override
@@ -1356,6 +1483,17 @@ class _ContactActionRow extends StatelessWidget {
       ),
       child: Row(
         children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: const Color(0xFF0D1117),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0x2630363D)),
+            ),
+            child: Icon(icon, size: 20, color: const Color(0xFF58A6FF)),
+          ),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1373,7 +1511,7 @@ class _ContactActionRow extends StatelessWidget {
             ),
           ),
           if (onTap != null)
-            TextButton(onPressed: onTap, child: const Text('Copy')),
+            TextButton(onPressed: onTap, child: Text(actionLabel)),
         ],
       ),
     );
@@ -1418,6 +1556,61 @@ class _SourceIconButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.text, required this.color});
+
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.28)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: TextStyle(color: color, fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NavPillButton extends StatelessWidget {
+  const _NavPillButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        foregroundColor: const Color(0xFFC9D1D9),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        backgroundColor: const Color(0x141F6FEB),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+      ),
+      child: Text(label),
     );
   }
 }
@@ -1509,13 +1702,15 @@ class _GridPainter extends CustomPainter {
 class _GitHubInspiredPanel extends StatelessWidget {
   const _GitHubInspiredPanel({
     required this.animation,
-    required this.onCopyEmail,
-    required this.onCopyPhone,
+    required this.onOpenEmail,
+    required this.onOpenPhone,
+    required this.onOpenGitHub,
   });
 
   final Animation<double> animation;
-  final VoidCallback onCopyEmail;
-  final VoidCallback onCopyPhone;
+  final VoidCallback onOpenEmail;
+  final VoidCallback onOpenPhone;
+  final VoidCallback onOpenGitHub;
 
   @override
   Widget build(BuildContext context) {
@@ -1523,7 +1718,11 @@ class _GitHubInspiredPanel extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xCC161B22),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xE61B222C), Color(0xCC0D1117)],
+        ),
         borderRadius: BorderRadius.circular(32),
         border: Border.all(color: const Color(0x26F0F6FC)),
         boxShadow: const [
@@ -1564,6 +1763,8 @@ class _GitHubInspiredPanel extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 10),
+              _StatusPill(text: 'Open to work', color: Color(0xFF1F6FEB)),
             ],
           ),
           const SizedBox(height: 24),
@@ -1661,13 +1862,18 @@ class _GitHubInspiredPanel extends StatelessWidget {
             children: [
               _ContactChip(
                 icon: Icons.email_outlined,
-                text: 'Copy Email',
-                onTap: onCopyEmail,
+                text: 'Open Email',
+                onTap: onOpenEmail,
               ),
               _ContactChip(
                 icon: Icons.phone_outlined,
-                text: 'Copy Phone',
-                onTap: onCopyPhone,
+                text: 'Call',
+                onTap: onOpenPhone,
+              ),
+              _ContactChip(
+                icon: Icons.code_rounded,
+                text: 'GitHub',
+                onTap: onOpenGitHub,
               ),
             ],
           ),
