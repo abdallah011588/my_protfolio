@@ -20,12 +20,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF09111F),
+        scaffoldBackgroundColor: const Color(0xFF0D1117),
         useMaterial3: true,
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF67E8F9),
-          secondary: Color(0xFFF59E0B),
-          surface: Color(0xFF111A2D),
+          primary: Color(0xFF58A6FF),
+          secondary: Color(0xFFA371F7),
+          surface: Color(0xFF161B22),
         ),
         textTheme: const TextTheme(
           displayLarge: TextStyle(
@@ -50,12 +50,12 @@ class MyApp extends StatelessWidget {
           bodyLarge: TextStyle(
             fontSize: 16,
             height: 1.7,
-            color: Color(0xFFD7E3F4),
+            color: Color(0xFFC9D1D9),
           ),
           bodyMedium: TextStyle(
             fontSize: 14,
             height: 1.6,
-            color: Color(0xFF9FB2CC),
+            color: Color(0xFF8B949E),
           ),
         ),
       ),
@@ -71,7 +71,8 @@ class PortfolioPage extends StatefulWidget {
   State<PortfolioPage> createState() => _PortfolioPageState();
 }
 
-class _PortfolioPageState extends State<PortfolioPage> {
+class _PortfolioPageState extends State<PortfolioPage>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   final Map<String, GlobalKey> _sectionKeys = {
     'About': GlobalKey(),
@@ -282,6 +283,24 @@ class _PortfolioPageState extends State<PortfolioPage> {
     ),
   ];
 
+  late final AnimationController _ambientController;
+
+  @override
+  void initState() {
+    super.initState();
+    _ambientController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 16),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _ambientController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _scrollTo(String section) {
     final context = _sectionKeys[section]?.currentContext;
     if (context == null) {
@@ -322,7 +341,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
     return Scaffold(
       body: Stack(
         children: [
-          const _PageBackdrop(),
+          _PageBackdrop(animation: _ambientController),
           SafeArea(
             child: CustomScrollView(
               controller: _scrollController,
@@ -377,6 +396,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                               fileName: 'Abdullah_Ibrahim_Mokhtar_CV.pdf',
                             );
                           },
+                          animation: _ambientController,
                         ),
                         const SizedBox(height: 28),
                         _SectionShell(
@@ -466,9 +486,9 @@ class _TopBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
       decoration: BoxDecoration(
-        color: const Color(0xCC0D1628),
+        color: const Color(0xCC0D1117),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
         boxShadow: const [
           BoxShadow(
             color: Color(0x40000000),
@@ -490,7 +510,7 @@ class _TopBar extends StatelessWidget {
                 SizedBox(height: 2),
                 Text(
                   'Flutter Developer',
-                  style: TextStyle(color: Color(0xFF9FB2CC)),
+                  style: TextStyle(color: Color(0xFF8B949E)),
                 ),
               ],
             ),
@@ -512,8 +532,8 @@ class _TopBar extends StatelessWidget {
           FilledButton(
             onPressed: onDownloadCv,
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF67E8F9),
-              foregroundColor: const Color(0xFF041019),
+              backgroundColor: const Color(0xFF2EA043),
+              foregroundColor: const Color(0xFFF0F6FC),
             ),
             child: const Text('Download CV'),
           ),
@@ -530,6 +550,7 @@ class _HeroSection extends StatelessWidget {
     required this.onCopyEmail,
     required this.onCopyPhone,
     required this.onDownloadCv,
+    this.animation,
   });
 
   final bool isDesktop;
@@ -537,6 +558,7 @@ class _HeroSection extends StatelessWidget {
   final VoidCallback onCopyEmail;
   final VoidCallback onCopyPhone;
   final VoidCallback onDownloadCv;
+  final Animation<double>? animation;
 
   @override
   Widget build(BuildContext context) {
@@ -546,14 +568,14 @@ class _HeroSection extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: const Color(0xFF112238),
+            color: const Color(0xFF161B22),
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: const Color(0x2D67E8F9)),
+            border: Border.all(color: const Color(0x2658A6FF)),
           ),
           child: const Text(
             '3+ years building production Flutter apps for mobile teams',
             style: TextStyle(
-              color: Color(0xFF67E8F9),
+              color: Color(0xFF58A6FF),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -580,8 +602,8 @@ class _HeroSection extends StatelessWidget {
             FilledButton(
               onPressed: () => onNavigate('Projects'),
               style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFFF59E0B),
-                foregroundColor: const Color(0xFF17110A),
+                backgroundColor: const Color(0xFF2EA043),
+                foregroundColor: const Color(0xFFF0F6FC),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 16,
@@ -592,7 +614,7 @@ class _HeroSection extends StatelessWidget {
             OutlinedButton(
               onPressed: onDownloadCv,
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFF355070)),
+                side: const BorderSide(color: Color(0xFF30363D)),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 16,
@@ -622,87 +644,10 @@ class _HeroSection extends StatelessWidget {
       ],
     );
 
-    final heroSide = Column(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF12233C), Color(0xFF0F172A), Color(0xFF1A1031)],
-            ),
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: const Color(0x1FFFFFFF)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Row(
-                children: [
-                  CircleAvatar(radius: 28, child: Icon(Icons.person_rounded)),
-                  SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Abdullah Ibrahim Mokhtar',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Cairo, Egypt',
-                          style: TextStyle(color: Color(0xFF9FB2CC)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              const _InfoTile(
-                title: 'Current focus',
-                value:
-                    'Scalable Flutter apps, clean architecture, and reliable real-time product flows.',
-              ),
-              const SizedBox(height: 14),
-              const _InfoTile(
-                title: 'Best-fit work',
-                value:
-                    'Cross-platform mobile products with strong UX, performance, and maintainable codebases.',
-              ),
-              const SizedBox(height: 14),
-              const _InfoTile(
-                title: 'Strengths',
-                value:
-                    'Bloc, Firebase, API integration, responsive UI, release readiness, and team collaboration.',
-              ),
-              const SizedBox(height: 24),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  _ContactChip(
-                    icon: Icons.email_outlined,
-                    text: 'Copy Email',
-                    onTap: onCopyEmail,
-                  ),
-                  _ContactChip(
-                    icon: Icons.phone_outlined,
-                    text: 'Copy Phone',
-                    onTap: onCopyPhone,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
+    final heroSide = _GitHubInspiredPanel(
+      animation: animation ?? kAlwaysDismissedAnimation,
+      onCopyEmail: onCopyEmail,
+      onCopyPhone: onCopyPhone,
     );
 
     return Container(
@@ -711,10 +656,10 @@ class _HeroSection extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF0E1728), Color(0xFF0B1221)],
+          colors: [Color(0xE610131A), Color(0xE60D1117)],
         ),
         borderRadius: BorderRadius.circular(36),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
         boxShadow: const [
           BoxShadow(
             color: Color(0x33000000),
@@ -810,9 +755,9 @@ class _ExperienceSection extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(22),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0E1728),
+                      color: const Color(0xFF161B22),
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0x1FFFFFFF)),
+                      border: Border.all(color: const Color(0x26F0F6FC)),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -822,7 +767,7 @@ class _ExperienceSection extends StatelessWidget {
                           height: 12,
                           margin: const EdgeInsets.only(top: 8),
                           decoration: const BoxDecoration(
-                            color: Color(0xFF67E8F9),
+                            color: Color(0xFF58A6FF),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -847,7 +792,7 @@ class _ExperienceSection extends StatelessWidget {
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF12233C),
+                                      color: const Color(0xFF21262D),
                                       borderRadius: BorderRadius.circular(999),
                                     ),
                                     child: Text(item.company),
@@ -872,7 +817,7 @@ class _ExperienceSection extends StatelessWidget {
                                         child: Icon(
                                           Icons.circle,
                                           size: 7,
-                                          color: Color(0xFFF59E0B),
+                                          color: Color(0xFFA371F7),
                                         ),
                                       ),
                                       const SizedBox(width: 10),
@@ -923,9 +868,9 @@ class _ProjectsSection extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(22),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0D1628),
+                          color: const Color(0xFF161B22),
                           borderRadius: BorderRadius.circular(26),
-                          border: Border.all(color: const Color(0x1FFFFFFF)),
+                          border: Border.all(color: const Color(0x26F0F6FC)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -936,13 +881,13 @@ class _ProjectsSection extends StatelessWidget {
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF1B2640),
+                                color: const Color(0xFF21262D),
                                 borderRadius: BorderRadius.circular(999),
                               ),
                               child: Text(
                                 project.label,
                                 style: const TextStyle(
-                                  color: Color(0xFF67E8F9),
+                                  color: Color(0xFF58A6FF),
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -966,7 +911,7 @@ class _ProjectsSection extends StatelessWidget {
                                       child: Icon(
                                         Icons.arrow_outward_rounded,
                                         size: 16,
-                                        color: Color(0xFFF59E0B),
+                                        color: Color(0xFFA371F7),
                                       ),
                                     ),
                                     const SizedBox(width: 10),
@@ -1051,9 +996,9 @@ class _SkillsSection extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(22),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0E1728),
+                          color: const Color(0xFF161B22),
                           borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: const Color(0x1FFFFFFF)),
+                          border: Border.all(color: const Color(0x26F0F6FC)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1075,12 +1020,12 @@ class _SkillsSection extends StatelessWidget {
                                             vertical: 10,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFF14213A),
+                                            color: const Color(0xFF21262D),
                                             borderRadius: BorderRadius.circular(
                                               14,
                                             ),
                                             border: Border.all(
-                                              color: const Color(0x22355A7A),
+                                              color: const Color(0x2630363D),
                                             ),
                                           ),
                                           child: Text(skill),
@@ -1118,9 +1063,9 @@ class _ContactSection extends StatelessWidget {
     final left = Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF0E1728),
+        color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1143,10 +1088,10 @@ class _ContactSection extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF10213A), Color(0xFF111827)],
+          colors: [Color(0xFF161B22), Color(0xFF0D1117)],
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1196,14 +1141,14 @@ class _Footer extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
       decoration: BoxDecoration(
-        color: const Color(0xFF0B1221),
+        color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
       ),
       child: const Text(
         'Designed and built in Flutter Web. Crafted for a professional, modern first impression.',
         textAlign: TextAlign.center,
-        style: TextStyle(color: Color(0xFF9FB2CC)),
+        style: TextStyle(color: Color(0xFF8B949E)),
       ),
     );
   }
@@ -1227,9 +1172,9 @@ class _SectionShell extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: const Color(0xB30C1424),
+        color: const Color(0xB3161B22),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1237,7 +1182,7 @@ class _SectionShell extends StatelessWidget {
           Text(
             eyebrow.toUpperCase(),
             style: const TextStyle(
-              color: Color(0xFF67E8F9),
+              color: Color(0xFF58A6FF),
               fontSize: 13,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.4,
@@ -1271,9 +1216,9 @@ class _MetricCard extends StatelessWidget {
       width: 170,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF101B30),
+        color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1283,7 +1228,7 @@ class _MetricCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w800,
-              color: Color(0xFFF59E0B),
+              color: Color(0xFF58A6FF),
             ),
           ),
           const SizedBox(height: 6),
@@ -1310,14 +1255,14 @@ class _HighlightCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF0E1728),
+        color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: const Color(0xFF67E8F9)),
+          Icon(icon, color: const Color(0xFF58A6FF)),
           const SizedBox(height: 14),
           Text(title, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 10),
@@ -1342,7 +1287,7 @@ class _InfoTile extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            color: Color(0xFFF59E0B),
+            color: Color(0xFFA371F7),
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -1372,14 +1317,14 @@ class _ContactChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF0D1628),
+          color: const Color(0xFF161B22),
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: const Color(0x1FFFFFFF)),
+          border: Border.all(color: const Color(0x26F0F6FC)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 18, color: const Color(0xFF67E8F9)),
+            Icon(icon, size: 18, color: const Color(0xFF58A6FF)),
             const SizedBox(width: 8),
             Text(text),
           ],
@@ -1405,9 +1350,9 @@ class _ContactActionRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1628),
+        color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0x1FFFFFFF)),
+        border: Border.all(color: const Color(0x26F0F6FC)),
       ),
       child: Row(
         children: [
@@ -1418,7 +1363,7 @@ class _ContactActionRow extends StatelessWidget {
                 Text(
                   label,
                   style: const TextStyle(
-                    color: Color(0xFFF59E0B),
+                    color: Color(0xFFA371F7),
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -1456,14 +1401,14 @@ class _SourceIconButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: const Color(0xFF15233B),
+            color: const Color(0xFF161B22),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0x22355A7A)),
+            border: Border.all(color: const Color(0x2630363D)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 18, color: const Color(0xFF67E8F9)),
+              Icon(icon, size: 18, color: const Color(0xFF58A6FF)),
               const SizedBox(width: 8),
               Text(
                 label,
@@ -1478,41 +1423,362 @@ class _SourceIconButton extends StatelessWidget {
 }
 
 class _PageBackdrop extends StatelessWidget {
-  const _PageBackdrop();
+  const _PageBackdrop({required this.animation});
+
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Stack(
-        fit: StackFit.expand,
-        children: const [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF08111E),
-                  Color(0xFF0B1221),
-                  Color(0xFF09101B),
-                ],
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        final shift = animation.value * 26;
+        return IgnorePointer(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF0D1117),
+                      Color(0xFF0D1117),
+                      Color(0xFF111827),
+                    ],
+                  ),
+                ),
               ),
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _GridPainter(
+                    lineColor: const Color(0x1430363D),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: -96 + shift,
+                left: -30,
+                child: const _GlowOrb(size: 320, color: Color(0x2258A6FF)),
+              ),
+              Positioned(
+                top: 180 - shift,
+                right: -50,
+                child: const _GlowOrb(size: 360, color: Color(0x22A371F7)),
+              ),
+              Positioned(
+                bottom: -24,
+                left: 120 + shift,
+                child: const _GlowOrb(size: 250, color: Color(0x22F778BA)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _GridPainter extends CustomPainter {
+  _GridPainter({required this.lineColor});
+
+  final Color lineColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = lineColor
+      ..strokeWidth = 1;
+
+    const spacing = 48.0;
+    for (double x = 0; x <= size.width; x += spacing) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+    for (double y = 0; y <= size.height; y += spacing) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _GridPainter oldDelegate) {
+    return oldDelegate.lineColor != lineColor;
+  }
+}
+
+class _GitHubInspiredPanel extends StatelessWidget {
+  const _GitHubInspiredPanel({
+    required this.animation,
+    required this.onCopyEmail,
+    required this.onCopyPhone,
+  });
+
+  final Animation<double> animation;
+  final VoidCallback onCopyEmail;
+  final VoidCallback onCopyPhone;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xCC161B22),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: const Color(0x26F0F6FC)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x22000000),
+            blurRadius: 40,
+            offset: Offset(0, 18),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              CircleAvatar(
+                radius: 28,
+                backgroundColor: Color(0xFF21262D),
+                child: Icon(Icons.person_rounded),
+              ),
+              SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Abdullah Ibrahim Mokhtar',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Cairo, Egypt',
+                      style: TextStyle(color: Color(0xFF8B949E)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            height: 220,
+            child: AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                final pulse = 0.96 + (animation.value * 0.08);
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Transform.scale(
+                      scale: pulse,
+                      child: Container(
+                        width: 190,
+                        height: 190,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color(0x2258A6FF),
+                            width: 1.4,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0x22A371F7),
+                          width: 1.4,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 88,
+                      height: 88,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            Color(0x6658A6FF),
+                            Color(0x22A371F7),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 28 + (animation.value * 14),
+                      right: 88,
+                      child: const _FloatingNode(color: Color(0xFF58A6FF)),
+                    ),
+                    Positioned(
+                      left: 70,
+                      bottom: 30 + (animation.value * 10),
+                      child: const _FloatingNode(color: Color(0xFFA371F7)),
+                    ),
+                    Positioned(
+                      right: 62,
+                      bottom: 54,
+                      child: const _FloatingNode(color: Color(0xFFF778BA)),
+                    ),
+                    const _PanelWindow(),
+                  ],
+                );
+              },
             ),
           ),
-          Positioned(
-            top: -80,
-            left: -20,
-            child: _GlowOrb(size: 260, color: Color(0x2267E8F9)),
+          const SizedBox(height: 20),
+          const _InfoTile(
+            title: 'Current focus',
+            value:
+                'Scalable Flutter apps, clean architecture, and real-time product flows.',
           ),
-          Positioned(
-            top: 220,
-            right: -40,
-            child: _GlowOrb(size: 300, color: Color(0x22F59E0B)),
+          const SizedBox(height: 14),
+          const _InfoTile(
+            title: 'Best-fit work',
+            value:
+                'Cross-platform products with polished UX, strong performance, and maintainable codebases.',
           ),
-          Positioned(
-            bottom: -30,
-            left: 80,
-            child: _GlowOrb(size: 240, color: Color(0x2214B8A6)),
+          const SizedBox(height: 14),
+          const _InfoTile(
+            title: 'Strengths',
+            value:
+                'Bloc, Firebase, API integration, responsive UI, delivery discipline, and teamwork.',
+          ),
+          const SizedBox(height: 24),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _ContactChip(
+                icon: Icons.email_outlined,
+                text: 'Copy Email',
+                onTap: onCopyEmail,
+              ),
+              _ContactChip(
+                icon: Icons.phone_outlined,
+                text: 'Copy Phone',
+                onTap: onCopyPhone,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PanelWindow extends StatelessWidget {
+  const _PanelWindow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 280,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xE61B222C),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0x2630363D)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Row(
+            children: [
+              _WindowDot(color: Color(0xFFF778BA)),
+              SizedBox(width: 6),
+              _WindowDot(color: Color(0xFFA371F7)),
+              SizedBox(width: 6),
+              _WindowDot(color: Color(0xFF58A6FF)),
+            ],
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Shipping Flutter experiences',
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
+          SizedBox(height: 10),
+          _CodeLine(widthFactor: 0.88),
+          SizedBox(height: 8),
+          _CodeLine(widthFactor: 0.72, color: Color(0xFF58A6FF)),
+          SizedBox(height: 8),
+          _CodeLine(widthFactor: 0.94),
+          SizedBox(height: 8),
+          _CodeLine(widthFactor: 0.58, color: Color(0xFFA371F7)),
+        ],
+      ),
+    );
+  }
+}
+
+class _WindowDot extends StatelessWidget {
+  const _WindowDot({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 10,
+      height: 10,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
+  }
+}
+
+class _CodeLine extends StatelessWidget {
+  const _CodeLine({
+    required this.widthFactor,
+    this.color = const Color(0xFF8B949E),
+  });
+
+  final double widthFactor;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox(
+      widthFactor: widthFactor,
+      child: Container(
+        height: 10,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(999),
+        ),
+      ),
+    );
+  }
+}
+
+class _FloatingNode extends StatelessWidget {
+  const _FloatingNode({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 14,
+      height: 14,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.45),
+            blurRadius: 18,
+            spreadRadius: 4,
           ),
         ],
       ),
