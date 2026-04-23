@@ -1593,23 +1593,19 @@ class _ExperienceSection extends StatelessWidget {
       isDesktop: isDesktop,
       child: IntrinsicHeight(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Timeline line
-            Column(
-              children: [
-                Container(
-                  width: 1,
-                  height: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [kBlue, Colors.transparent],
-                    ),
+            const SizedBox(
+              width: 1,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [kPurple, kBlue, Colors.transparent],
                   ),
                 ),
-              ],
+              ),
             ),
             const SizedBox(width: 24),
             Expanded(
@@ -2263,7 +2259,7 @@ class _Footer extends StatelessWidget {
       border: Border.all(color: kBorder),
     ),
     child: const Text(
-      'Designed & built by Abdullah Ibrahim Mokhtar · Flutter Developer · 2025',
+      'Designed & built by Abdullah Ibrahim Mokhtar · Flutter Developer · 2026',
       textAlign: TextAlign.center,
       style: TextStyle(color: kText3, fontSize: 13),
     ),
