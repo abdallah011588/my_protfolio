@@ -27,7 +27,7 @@ const kText3 = Color(0xFF4A5A80);
 
 const kEmailAddress = 'abdullah.ibrahim8855@gmail.com';
 const kPhoneNumber = '+20 115 886 1697';
-const kPhoneUri = 'tel:+201158861697';
+const kWhatsAppUrl = 'https://wa.me/201158861697';
 const kGitHubProfile = 'https://github.com/abdallah011588';
 const kLinkedInProfile =
     'https://www.linkedin.com/in/abdullah-ibrahim-mokhtar-548400236?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app';
@@ -38,7 +38,7 @@ void _downloadCv() => downloadFile(url: kCvAssetUrl, fileName: kCvFileName);
 
 void _openEmail() => openExternalUrl('mailto:$kEmailAddress');
 
-void _openPhone() => openExternalUrl(kPhoneUri);
+void _openWhatsApp() => openExternalUrl(kWhatsAppUrl);
 
 void _openGitHub() => openExternalUrl(kGitHubProfile);
 
@@ -1330,8 +1330,8 @@ class _HeroCard extends StatelessWidget {
               ),
               _ChipBtn(
                 icon: Icons.phone_outlined,
-                label: 'Call',
-                onTap: _openPhone,
+                label: 'WhatsApp',
+                onTap: _openWhatsApp,
               ),
               _ChipBtn(
                 icon: Icons.code_rounded,
@@ -2164,8 +2164,8 @@ class _ContactSection extends StatelessWidget {
           icon: Icons.phone_outlined,
           label: 'Phone',
           value: kPhoneNumber,
-          action: 'Call',
-          onTap: _openPhone,
+          action: 'WhatsApp',
+          onTap: _openWhatsApp,
         ),
         const SizedBox(height: 12),
         _ContactRow(
