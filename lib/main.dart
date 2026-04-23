@@ -1,6 +1,10 @@
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'web_helpers/download_helper.dart'
+    if (dart.library.html) 'web_helpers/download_helper_web.dart';
+import 'web_helpers/url_helper.dart'
+    if (dart.library.html) 'web_helpers/url_helper_web.dart';
 
 void main() {
   runApp(const PortfolioApp());
@@ -20,6 +24,25 @@ const kGreen = Color(0xFF34D399);
 const kText = Color(0xFFE8EDF8);
 const kText2 = Color(0xFF8B9BC8);
 const kText3 = Color(0xFF4A5A80);
+
+const kEmailAddress = 'abdullah.ibrahim8855@gmail.com';
+const kPhoneNumber = '+20 115 886 1697';
+const kPhoneUri = 'tel:+201158861697';
+const kGitHubProfile = 'https://github.com/abdallah011588';
+const kLinkedInProfile =
+    'https://www.linkedin.com/in/abdullah-ibrahim-mokhtar-548400236/';
+const kCvAssetUrl = 'assets/assets/documents/abdullah_ibrahim_mokhtar_cv.pdf';
+const kCvFileName = 'abdullah_ibrahim_mokhtar_cv.pdf';
+
+void _downloadCv() => downloadFile(url: kCvAssetUrl, fileName: kCvFileName);
+
+void _openEmail() => openExternalUrl('mailto:$kEmailAddress');
+
+void _openPhone() => openExternalUrl(kPhoneUri);
+
+void _openGitHub() => openExternalUrl(kGitHubProfile);
+
+void _openLinkedIn() => openExternalUrl(kLinkedInProfile);
 
 // ─── Data models ───────────────────────────────────────────────────
 class ExperienceItem {
@@ -974,7 +997,7 @@ class _HeroText extends StatelessWidget {
             _SecondaryBtn(
               label: 'Download CV',
               icon: Icons.download_rounded,
-              onTap: () {},
+              onTap: _downloadCv,
             ),
             _TextBtn(
               label: "Let's Work Together →",
@@ -1302,10 +1325,23 @@ class _HeroCard extends StatelessWidget {
               _ChipBtn(
                 icon: Icons.email_outlined,
                 label: 'Email',
-                onTap: () {},
+                onTap: _openEmail,
               ),
-              _ChipBtn(icon: Icons.phone_outlined, label: 'Call', onTap: () {}),
-              _ChipBtn(icon: Icons.code_rounded, label: 'GitHub', onTap: () {}),
+              _ChipBtn(
+                icon: Icons.phone_outlined,
+                label: 'Call',
+                onTap: _openPhone,
+              ),
+              _ChipBtn(
+                icon: Icons.code_rounded,
+                label: 'GitHub',
+                onTap: _openGitHub,
+              ),
+              _ChipBtn(
+                icon: Icons.link_rounded,
+                label: 'LinkedIn',
+                onTap: _openLinkedIn,
+              ),
             ],
           ),
         ],
@@ -1905,32 +1941,36 @@ class _LinkChipState extends State<_LinkChip> {
   bool _hovered = false;
   @override
   Widget build(BuildContext context) => MouseRegion(
+    cursor: SystemMouseCursors.click,
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
-    child: AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: _hovered ? kBlue.withValues(alpha: .06) : kSurface2,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: _hovered ? kBlue.withValues(alpha: .3) : kBorder,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(widget.icon, size: 13, color: _hovered ? kBlue : kText2),
-          const SizedBox(width: 6),
-          Text(
-            widget.label,
-            style: TextStyle(
-              fontSize: 12,
-              color: _hovered ? kBlue : kText2,
-              fontWeight: FontWeight.w500,
-            ),
+    child: GestureDetector(
+      onTap: () => openExternalUrl(widget.url),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: _hovered ? kBlue.withValues(alpha: .06) : kSurface2,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: _hovered ? kBlue.withValues(alpha: .3) : kBorder,
           ),
-        ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(widget.icon, size: 13, color: _hovered ? kBlue : kText2),
+            const SizedBox(width: 6),
+            Text(
+              widget.label,
+              style: TextStyle(
+                fontSize: 12,
+                color: _hovered ? kBlue : kText2,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -2102,36 +2142,47 @@ class _ContactSection extends StatelessWidget {
           _PrimaryBtn(
             label: 'Send me an email',
             icon: Icons.email_outlined,
-            onTap: () {},
+            onTap: _openEmail,
           ),
         ],
       ),
     );
 
     final right = Column(
-      children: const [
+      children: [
         _ContactRow(
           icon: Icons.email_outlined,
           label: 'Email',
-          value: 'abdullah.ibrahim8855@gmail.com',
+          value: kEmailAddress,
           action: 'Open',
+          onTap: _openEmail,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _ContactRow(
           icon: Icons.phone_outlined,
           label: 'Phone',
-          value: '+20 115 886 1697',
+          value: kPhoneNumber,
           action: 'Call',
+          onTap: _openPhone,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _ContactRow(
           icon: Icons.code_rounded,
           label: 'GitHub',
           value: 'github.com/abdallah011588',
           action: 'Visit',
+          onTap: _openGitHub,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _ContactRow(
+          icon: Icons.link_rounded,
+          label: 'LinkedIn',
+          value: 'linkedin.com/in/abdullah-ibrahim-mokhtar-548400236',
+          action: 'Visit',
+          onTap: _openLinkedIn,
+        ),
+        const SizedBox(height: 12),
+        const _ContactRow(
           icon: Icons.location_on_outlined,
           label: 'Location',
           value: 'Cairo, Egypt',
@@ -2163,11 +2214,13 @@ class _ContactRow extends StatefulWidget {
   final IconData icon;
   final String label, value;
   final String? action;
+  final VoidCallback? onTap;
   const _ContactRow({
     required this.icon,
     required this.label,
     required this.value,
     this.action,
+    this.onTap,
   });
   @override
   State<_ContactRow> createState() => _ContactRowState();
@@ -2177,20 +2230,27 @@ class _ContactRowState extends State<_ContactRow> {
   bool _hovered = false;
   @override
   Widget build(BuildContext context) => MouseRegion(
+    cursor:
+        widget.onTap == null ? MouseCursor.defer : SystemMouseCursors.click,
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
-    child: AnimatedContainer(
+    child: GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: kSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: _hovered ? kBlue.withValues(alpha: .3) : kBorder,
+          color:
+              _hovered && widget.onTap != null
+                  ? kBlue.withValues(alpha: .3)
+                  : kBorder,
         ),
       ),
       transform:
-          _hovered
+          _hovered && widget.onTap != null
               ? (Matrix4.identity()..translate(4.0, 0.0))
               : Matrix4.identity(),
       child: Row(
@@ -2243,6 +2303,7 @@ class _ContactRowState extends State<_ContactRow> {
             ),
         ],
       ),
+    ),
     ),
   );
 }
