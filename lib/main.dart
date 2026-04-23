@@ -30,7 +30,7 @@ const kPhoneNumber = '+20 115 886 1697';
 const kPhoneUri = 'tel:+201158861697';
 const kGitHubProfile = 'https://github.com/abdallah011588';
 const kLinkedInProfile =
-    'https://www.linkedin.com/in/abdullah-ibrahim-mokhtar-548400236/';
+    'https://www.linkedin.com/in/abdullah-ibrahim-mokhtar-548400236?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app';
 const kCvAssetUrl = 'assets/assets/documents/abdullah_ibrahim_mokhtar_cv.pdf';
 const kCvFileName = 'abdullah_ibrahim_mokhtar_cv.pdf';
 
@@ -2230,80 +2230,79 @@ class _ContactRowState extends State<_ContactRow> {
   bool _hovered = false;
   @override
   Widget build(BuildContext context) => MouseRegion(
-    cursor:
-        widget.onTap == null ? MouseCursor.defer : SystemMouseCursors.click,
+    cursor: widget.onTap == null ? MouseCursor.defer : SystemMouseCursors.click,
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
     child: GestureDetector(
       onTap: widget.onTap,
       child: AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: kSurface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color:
-              _hovered && widget.onTap != null
-                  ? kBlue.withValues(alpha: .3)
-                  : kBorder,
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: kSurface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color:
+                _hovered && widget.onTap != null
+                    ? kBlue.withValues(alpha: .3)
+                    : kBorder,
+          ),
         ),
-      ),
-      transform:
-          _hovered && widget.onTap != null
-              ? (Matrix4.identity()..translate(4.0, 0.0))
-              : Matrix4.identity(),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  kBlue.withValues(alpha: .1),
-                  kPurple.withValues(alpha: .1),
+        transform:
+            _hovered && widget.onTap != null
+                ? (Matrix4.identity()..translate(4.0, 0.0))
+                : Matrix4.identity(),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    kBlue.withValues(alpha: .1),
+                    kPurple.withValues(alpha: .1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: kBlue.withValues(alpha: .2)),
+              ),
+              child: Icon(widget.icon, color: kBlue, size: 18),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.label,
+                    style: const TextStyle(
+                      color: kPurple,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: .6,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    widget.value,
+                    style: const TextStyle(color: kText, fontSize: 13),
+                  ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: kBlue.withValues(alpha: .2)),
             ),
-            child: Icon(widget.icon, color: kBlue, size: 18),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.label,
-                  style: const TextStyle(
-                    color: kPurple,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: .6,
-                  ),
+            if (widget.action != null)
+              Text(
+                '${widget.action} →',
+                style: const TextStyle(
+                  color: kBlue,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  widget.value,
-                  style: const TextStyle(color: kText, fontSize: 13),
-                ),
-              ],
-            ),
-          ),
-          if (widget.action != null)
-            Text(
-              '${widget.action} →',
-              style: const TextStyle(
-                color: kBlue,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
               ),
-            ),
-        ],
+          ],
+        ),
       ),
-    ),
     ),
   );
 }

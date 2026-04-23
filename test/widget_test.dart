@@ -11,7 +11,7 @@ import 'package:my_protfolio/main.dart';
 
 void main() {
   testWidgets('portfolio renders hero content', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const PortfolioApp());
     await tester.pumpAndSettle();
 
     expect(find.text('Abdullah Ibrahim Mokhtar'), findsWidgets);
