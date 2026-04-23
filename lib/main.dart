@@ -333,7 +333,7 @@ class _PortfolioPageState extends State<PortfolioPage>
             ? 88.0
             : width >= 900
             ? 44.0
-            : 20.0;
+            : 10.0;
 
     return Scaffold(
       body: Stack(
@@ -346,6 +346,7 @@ class _PortfolioPageState extends State<PortfolioPage>
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: _HeaderDelegate(
+                    extent: isDesktop ? 92 : 165,
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(
                         horizontalPadding,
@@ -376,7 +377,7 @@ class _PortfolioPageState extends State<PortfolioPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         _HeroSection(
                           isDesktop: isDesktop,
                           onNavigate: _scrollTo,
@@ -392,41 +393,59 @@ class _PortfolioPageState extends State<PortfolioPage>
                           },
                           animation: _ambientController,
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         _SectionShell(
                           key: _sectionKeys['About'],
                           eyebrow: 'About',
                           title:
                               'Building dependable Flutter products with clean architecture and thoughtful UX.',
                           child: _AboutSection(isDesktop: isDesktop),
+                          isDesktop: isDesktop,
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         _SectionShell(
                           key: _sectionKeys['Experience'],
                           eyebrow: 'Experience',
                           title:
                               'A delivery-focused timeline across product teams, communication apps, and commerce platforms.',
-                          child: _ExperienceSection(items: _experience),
+                          child: _ExperienceSection(
+                            items: _experience,
+                            isDesktop: isDesktop,
+                          ),
+                          isDesktop: isDesktop,
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         _SectionShell(
                           key: _sectionKeys['Projects'],
                           eyebrow: 'Selected Work',
                           title:
                               'Production-style apps spanning social, commerce, booking, logistics, and security.',
-                          child: _ProjectsSection(projects: _projects),
+                          child: _ProjectsSection(
+                            projects: _projects,
+
+                            isDesktop: isDesktop,
+                          ),
+                          isDesktop: isDesktop,
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         _SectionShell(
                           key: _sectionKeys['Skills'],
+                          isDesktop: isDesktop,
+
                           eyebrow: 'Capabilities',
                           title:
                               'The tools, architecture patterns, and delivery habits behind my Flutter work.',
-                          child: _SkillsSection(skillGroups: _skillGroups),
+                          child: _SkillsSection(
+                            skillGroups: _skillGroups,
+
+                            isDesktop: isDesktop,
+                          ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         _SectionShell(
                           key: _sectionKeys['Contact'],
+                          isDesktop: isDesktop,
+
                           eyebrow: 'Contact',
                           title:
                               'Open to Flutter roles, freelance builds, and product teams that care about quality.',
@@ -437,9 +456,9 @@ class _PortfolioPageState extends State<PortfolioPage>
                             onOpenGitHub: _openGitHub,
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 20),
                         const _Footer(),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -469,6 +488,30 @@ class _TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navItems = ['About', 'Experience', 'Projects', 'Skills', 'Contact'];
+    final mobileIdentity = InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onOpenGitHub,
+      child: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Abdullah Ibrahim Mokhtar',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+            ),
+            SizedBox(height: 2),
+            Text(
+              'Flutter Developer',
+              style: TextStyle(fontSize: 13, color: Color(0xFF8B949E)),
+            ),
+          ],
+        ),
+      ),
+    );
 
     return Container(
       margin: const EdgeInsets.only(top: 12, bottom: 8),
@@ -489,82 +532,94 @@ class _TopBar extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 12,
-              runSpacing: 8,
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(18),
-                  onTap: onOpenGitHub,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+      child:
+          isDesktop
+              ? Row(
+                children: [
+                  Expanded(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 12,
+                      runSpacing: 8,
                       children: [
-                        Text(
-                          'Abdullah Ibrahim Mokhtar',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'Flutter Developer',
-                          style: TextStyle(color: Color(0xFF8B949E)),
+                        mobileIdentity,
+                        const _StatusPill(
+                          text: 'Available for Flutter roles',
+                          color: Color(0xFF2EA043),
                         ),
                       ],
                     ),
                   ),
-                ),
-                if (isDesktop)
-                  const _StatusPill(
-                    text: 'Available for Flutter roles',
-                    color: Color(0xFF2EA043),
+                  Wrap(
+                    spacing: 8,
+                    children:
+                        navItems
+                            .map(
+                              (item) => _NavPillButton(
+                                label: item,
+                                onTap: () => onSelectSection(item),
+                              ),
+                            )
+                            .toList(),
                   ),
-              ],
-            ),
-          ),
-          if (isDesktop)
-            Wrap(
-              spacing: 8,
-              children:
-                  navItems
-                      .map(
-                        (item) => _NavPillButton(
-                          label: item,
-                          onTap: () => onSelectSection(item),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    onPressed: onOpenGitHub,
+                    tooltip: 'Open GitHub',
+                    style: IconButton.styleFrom(
+                      backgroundColor: const Color(0xFF161B22),
+                      foregroundColor: const Color(0xFFF0F6FC),
+                      side: const BorderSide(color: Color(0xFF30363D)),
+                    ),
+                    icon: const Icon(Icons.code_rounded),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: onDownloadCv,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF2EA043),
+                      foregroundColor: const Color(0xFFF0F6FC),
+                    ),
+                    child: const Text('Download CV'),
+                  ),
+                ],
+              )
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  mobileIdentity,
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: onOpenGitHub,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFFF0F6FC),
+                            side: const BorderSide(color: Color(0xFF30363D)),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          icon: const Icon(Icons.code_rounded),
+                          label: const Text('GitHub'),
                         ),
-                      )
-                      .toList(),
-            ),
-          const SizedBox(width: 10),
-          IconButton(
-            onPressed: onOpenGitHub,
-            tooltip: 'Open GitHub',
-            style: IconButton.styleFrom(
-              backgroundColor: const Color(0xFF161B22),
-              foregroundColor: const Color(0xFFF0F6FC),
-              side: const BorderSide(color: Color(0xFF30363D)),
-            ),
-            icon: const Icon(Icons.code_rounded),
-          ),
-          const SizedBox(width: 8),
-          FilledButton(
-            onPressed: onDownloadCv,
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF2EA043),
-              foregroundColor: const Color(0xFFF0F6FC),
-            ),
-            child: const Text('Download CV'),
-          ),
-        ],
-      ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: FilledButton(
+                          onPressed: onDownloadCv,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF2EA043),
+                            foregroundColor: const Color(0xFFF0F6FC),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: const Text('Download CV'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
     );
   }
 }
@@ -615,7 +670,7 @@ class _HeroSection extends StatelessWidget {
           'Flutter developer crafting scalable products with fast UI, clean architecture, and real-time experiences.',
           style: Theme.of(
             context,
-          ).textTheme.displayLarge?.copyWith(fontSize: isDesktop ? 68 : 42),
+          ).textTheme.displayLarge?.copyWith(fontSize: isDesktop ? 68 : 34),
         ),
         const SizedBox(height: 18),
         ConstrainedBox(
@@ -803,20 +858,25 @@ class _AboutSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cards = [
-      const _HighlightCard(
+      _HighlightCard(
         title: 'Product mindset',
+        isDesktop: isDesktop,
         description:
             'I focus on building features that feel clear for users and maintainable for teams, not just shipping screens.',
         icon: Icons.auto_awesome_mosaic_rounded,
       ),
-      const _HighlightCard(
+      _HighlightCard(
         title: 'Architecture discipline',
+        isDesktop: isDesktop,
+
         description:
             'Clean Architecture, reusable components, and strong state management choices help me scale apps with confidence.',
         icon: Icons.account_tree_outlined,
       ),
-      const _HighlightCard(
+      _HighlightCard(
         title: 'Real-time expertise',
+        isDesktop: isDesktop,
+
         description:
             'I have direct experience with chat, streaming, notifications, tracking, and Firebase-backed responsive flows.',
         icon: Icons.bolt_outlined,
@@ -849,9 +909,10 @@ class _AboutSection extends StatelessWidget {
 }
 
 class _ExperienceSection extends StatelessWidget {
-  const _ExperienceSection({required this.items});
+  const _ExperienceSection({required this.items, required this.isDesktop});
 
   final List<ExperienceItem> items;
+  final bool isDesktop;
 
   @override
   Widget build(BuildContext context) {
@@ -862,7 +923,7 @@ class _ExperienceSection extends StatelessWidget {
                 (item) => Padding(
                   padding: const EdgeInsets.only(bottom: 18),
                   child: Container(
-                    padding: const EdgeInsets.all(22),
+                    padding: EdgeInsets.all(isDesktop ? 24 : 12),
                     decoration: BoxDecoration(
                       color: const Color(0xFF161B22),
                       borderRadius: BorderRadius.circular(24),
@@ -949,9 +1010,10 @@ class _ExperienceSection extends StatelessWidget {
 }
 
 class _ProjectsSection extends StatelessWidget {
-  const _ProjectsSection({required this.projects});
+  const _ProjectsSection({required this.projects, required this.isDesktop});
 
   final List<ProjectItem> projects;
+  final bool isDesktop;
 
   @override
   Widget build(BuildContext context) {
@@ -975,7 +1037,7 @@ class _ProjectsSection extends StatelessWidget {
                     (project) => SizedBox(
                       width: itemWidth,
                       child: Container(
-                        padding: const EdgeInsets.all(22),
+                        padding: EdgeInsets.all(isDesktop ? 22 : 10),
                         decoration: BoxDecoration(
                           color: const Color(0xFF161B22),
                           borderRadius: BorderRadius.circular(26),
@@ -1047,24 +1109,28 @@ class _ProjectsSection extends StatelessWidget {
                                     _SourceIconButton(
                                       icon: Icons.code_rounded,
                                       label: 'GitHub',
-                                      onTap: () =>
-                                          openExternalUrl(project.githubUrl!),
+                                      onTap:
+                                          () => openExternalUrl(
+                                            project.githubUrl!,
+                                          ),
                                     ),
                                   if (project.playStoreUrl != null)
                                     _SourceIconButton(
                                       icon: Icons.android_rounded,
                                       label: 'Play',
-                                      onTap: () => openExternalUrl(
-                                        project.playStoreUrl!,
-                                      ),
+                                      onTap:
+                                          () => openExternalUrl(
+                                            project.playStoreUrl!,
+                                          ),
                                     ),
                                   if (project.appStoreUrl != null)
                                     _SourceIconButton(
                                       icon: Icons.apple_rounded,
                                       label: 'App Store',
-                                      onTap: () => openExternalUrl(
-                                        project.appStoreUrl!,
-                                      ),
+                                      onTap:
+                                          () => openExternalUrl(
+                                            project.appStoreUrl!,
+                                          ),
                                     ),
                                 ],
                               ),
@@ -1082,9 +1148,10 @@ class _ProjectsSection extends StatelessWidget {
 }
 
 class _SkillsSection extends StatelessWidget {
-  const _SkillsSection({required this.skillGroups});
+  const _SkillsSection({required this.skillGroups, required this.isDesktop});
 
   final List<SkillGroup> skillGroups;
+  final bool isDesktop;
 
   @override
   Widget build(BuildContext context) {
@@ -1103,7 +1170,8 @@ class _SkillsSection extends StatelessWidget {
                     (group) => SizedBox(
                       width: itemWidth,
                       child: Container(
-                        padding: const EdgeInsets.all(22),
+                        padding: EdgeInsets.all(isDesktop ? 22 : 10),
+
                         decoration: BoxDecoration(
                           color: const Color(0xFF161B22),
                           borderRadius: BorderRadius.circular(24),
@@ -1170,7 +1238,7 @@ class _ContactSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final left = Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(isDesktop ? 24 : 10),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
@@ -1283,17 +1351,20 @@ class _SectionShell extends StatelessWidget {
     required this.eyebrow,
     required this.title,
     required this.child,
+    required this.isDesktop,
   });
 
   final String eyebrow;
   final String title;
   final Widget child;
 
+  final bool isDesktop;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(isDesktop ? 25 : 10),
       decoration: BoxDecoration(
         color: const Color(0xB3161B22),
         borderRadius: BorderRadius.circular(32),
@@ -1367,16 +1438,18 @@ class _HighlightCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.icon,
+    required this.isDesktop,
   });
 
   final String title;
   final String description;
   final IconData icon;
+  final bool isDesktop;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(isDesktop ? 24 : 10),
       decoration: BoxDecoration(
         color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(24),
@@ -1548,10 +1621,7 @@ class _SourceIconButton extends StatelessWidget {
             children: [
               Icon(icon, size: 18, color: const Color(0xFF58A6FF)),
               const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
+              Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
             ],
           ),
         ),
@@ -1645,9 +1715,7 @@ class _PageBackdrop extends StatelessWidget {
               ),
               Positioned.fill(
                 child: CustomPaint(
-                  painter: _GridPainter(
-                    lineColor: const Color(0x1430363D),
-                  ),
+                  painter: _GridPainter(lineColor: const Color(0x1430363D)),
                 ),
               ),
               Positioned(
@@ -1680,9 +1748,10 @@ class _GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = lineColor
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = lineColor
+          ..strokeWidth = 1;
 
     const spacing = 48.0;
     for (double x = 0; x <= size.width; x += spacing) {
@@ -1733,151 +1802,197 @@ class _GitHubInspiredPanel extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isCompact = constraints.maxWidth < 430;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: Color(0xFF21262D),
-                child: Icon(Icons.person_rounded),
-              ),
-              SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              if (isCompact) ...[
+                const Row(
                   children: [
-                    Text(
-                      'Abdullah Ibrahim Mokhtar',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Color(0xFF21262D),
+                      child: Icon(Icons.person_rounded),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Cairo, Egypt',
-                      style: TextStyle(color: Color(0xFF8B949E)),
+                    SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Abdullah Ibrahim Mokhtar',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Cairo, Egypt',
+                            style: TextStyle(color: Color(0xFF8B949E)),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(width: 10),
-              _StatusPill(text: 'Open to work', color: Color(0xFF1F6FEB)),
-            ],
-          ),
-          const SizedBox(height: 24),
-          SizedBox(
-            height: 220,
-            child: AnimatedBuilder(
-              animation: animation,
-              builder: (context, child) {
-                final pulse = 0.96 + (animation.value * 0.08);
-                return Stack(
-                  alignment: Alignment.center,
+                const SizedBox(height: 14),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: _StatusPill(
+                    text: 'Open to work',
+                    color: Color(0xFF1F6FEB),
+                  ),
+                ),
+              ] else ...[
+                const Row(
                   children: [
-                    Transform.scale(
-                      scale: pulse,
-                      child: Container(
-                        width: 190,
-                        height: 190,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0x2258A6FF),
-                            width: 1.4,
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Color(0xFF21262D),
+                      child: Icon(Icons.person_rounded),
+                    ),
+                    SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Abdullah Ibrahim Mokhtar',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Cairo, Egypt',
+                            style: TextStyle(color: Color(0xFF8B949E)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    _StatusPill(text: 'Open to work', color: Color(0xFF1F6FEB)),
+                  ],
+                ),
+              ],
+              const SizedBox(height: 24),
+              SizedBox(
+                height: 220,
+                child: AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, child) {
+                    final pulse = 0.96 + (animation.value * 0.08);
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Transform.scale(
+                          scale: pulse,
+                          child: Container(
+                            width: 190,
+                            height: 190,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0x2258A6FF),
+                                width: 1.4,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      width: 140,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0x22A371F7),
-                          width: 1.4,
+                        Container(
+                          width: 140,
+                          height: 140,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: const Color(0x22A371F7),
+                              width: 1.4,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      width: 88,
-                      height: 88,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            Color(0x6658A6FF),
-                            Color(0x22A371F7),
-                            Colors.transparent,
-                          ],
+                        Container(
+                          width: 88,
+                          height: 88,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                Color(0x6658A6FF),
+                                Color(0x22A371F7),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 28 + (animation.value * 14),
-                      right: 88,
-                      child: const _FloatingNode(color: Color(0xFF58A6FF)),
-                    ),
-                    Positioned(
-                      left: 70,
-                      bottom: 30 + (animation.value * 10),
-                      child: const _FloatingNode(color: Color(0xFFA371F7)),
-                    ),
-                    Positioned(
-                      right: 62,
-                      bottom: 54,
-                      child: const _FloatingNode(color: Color(0xFFF778BA)),
-                    ),
-                    const _PanelWindow(),
-                  ],
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 20),
-          const _InfoTile(
-            title: 'Current focus',
-            value:
-                'Scalable Flutter apps, clean architecture, and real-time product flows.',
-          ),
-          const SizedBox(height: 14),
-          const _InfoTile(
-            title: 'Best-fit work',
-            value:
-                'Cross-platform products with polished UX, strong performance, and maintainable codebases.',
-          ),
-          const SizedBox(height: 14),
-          const _InfoTile(
-            title: 'Strengths',
-            value:
-                'Bloc, Firebase, API integration, responsive UI, delivery discipline, and teamwork.',
-          ),
-          const SizedBox(height: 24),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              _ContactChip(
-                icon: Icons.email_outlined,
-                text: 'Open Email',
-                onTap: onOpenEmail,
+                        Positioned(
+                          top: 28 + (animation.value * 14),
+                          right: 88,
+                          child: const _FloatingNode(color: Color(0xFF58A6FF)),
+                        ),
+                        Positioned(
+                          left: 70,
+                          bottom: 30 + (animation.value * 10),
+                          child: const _FloatingNode(color: Color(0xFFA371F7)),
+                        ),
+                        Positioned(
+                          right: 62,
+                          bottom: 54,
+                          child: const _FloatingNode(color: Color(0xFFF778BA)),
+                        ),
+                        const _PanelWindow(),
+                      ],
+                    );
+                  },
+                ),
               ),
-              _ContactChip(
-                icon: Icons.phone_outlined,
-                text: 'Call',
-                onTap: onOpenPhone,
+              const SizedBox(height: 20),
+              const _InfoTile(
+                title: 'Current focus',
+                value:
+                    'Scalable Flutter apps, clean architecture, and real-time product flows.',
               ),
-              _ContactChip(
-                icon: Icons.code_rounded,
-                text: 'GitHub',
-                onTap: onOpenGitHub,
+              const SizedBox(height: 14),
+              const _InfoTile(
+                title: 'Best-fit work',
+                value:
+                    'Cross-platform products with polished UX, strong performance, and maintainable codebases.',
+              ),
+              const SizedBox(height: 14),
+              const _InfoTile(
+                title: 'Strengths',
+                value:
+                    'Bloc, Firebase, API integration, responsive UI, delivery discipline, and teamwork.',
+              ),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  _ContactChip(
+                    icon: Icons.email_outlined,
+                    text: 'Open Email',
+                    onTap: onOpenEmail,
+                  ),
+                  _ContactChip(
+                    icon: Icons.phone_outlined,
+                    text: 'Call',
+                    onTap: onOpenPhone,
+                  ),
+                  _ContactChip(
+                    icon: Icons.code_rounded,
+                    text: 'GitHub',
+                    onTap: onOpenGitHub,
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -2012,15 +2127,16 @@ class _GlowOrb extends StatelessWidget {
 }
 
 class _HeaderDelegate extends SliverPersistentHeaderDelegate {
-  _HeaderDelegate({required this.child});
+  _HeaderDelegate({required this.child, required this.extent});
 
   final Widget child;
+  final double extent;
 
   @override
-  double get minExtent => 92;
+  double get minExtent => extent;
 
   @override
-  double get maxExtent => 92;
+  double get maxExtent => extent;
 
   @override
   Widget build(
@@ -2033,7 +2149,7 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
-    return oldDelegate.child != child;
+    return oldDelegate.child != child || oldDelegate.extent != extent;
   }
 }
 
