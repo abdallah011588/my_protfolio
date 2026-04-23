@@ -693,7 +693,7 @@ class _MobileNav extends StatelessWidget {
                 colors: [kBlue, kPurple],
               ).createShader(b),
           child: const Text(
-            'AI',
+            'Abdullah Ibrahim',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
@@ -825,6 +825,7 @@ class _HeroSectionState extends State<_HeroSection>
                       child: _HeroCard(
                         orbitAnim: widget.orbitAnim,
                         pulseAnim: widget.pulseAnim,
+                        isDesktop: true,
                       ),
                     ),
                   ],
@@ -842,6 +843,7 @@ class _HeroSectionState extends State<_HeroSection>
                     _HeroCard(
                       orbitAnim: widget.orbitAnim,
                       pulseAnim: widget.pulseAnim,
+                      isDesktop: false,
                     ),
                   ],
                 ),
@@ -997,12 +999,17 @@ class _HeroText extends StatelessWidget {
 
 class _HeroCard extends StatelessWidget {
   final Animation<double> orbitAnim, pulseAnim;
-  const _HeroCard({required this.orbitAnim, required this.pulseAnim});
+  final bool isDesktop;
+  const _HeroCard({
+    required this.orbitAnim,
+    required this.pulseAnim,
+    required this.isDesktop,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
@@ -1022,6 +1029,52 @@ class _HeroCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (!isDesktop)
+            Align(
+              alignment: Alignment.centerRight,
+              child: AnimatedBuilder(
+                animation: pulseAnim,
+                builder:
+                    (_, __) => Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: kGreen.withValues(
+                          alpha: .07 + pulseAnim.value * .03,
+                        ),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: kGreen.withValues(alpha: .2)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 5,
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: kGreen.withValues(
+                                alpha: .7 + pulseAnim.value * .3,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'Open to work',
+                            style: TextStyle(
+                              color: kGreen,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+              ),
+            ),
+          SizedBox(height: 20),
           // Profile row
           Row(
             children: [
@@ -1064,47 +1117,50 @@ class _HeroCard extends StatelessWidget {
                   ],
                 ),
               ),
-              AnimatedBuilder(
-                animation: pulseAnim,
-                builder:
-                    (_, __) => Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: kGreen.withValues(
-                          alpha: .07 + pulseAnim.value * .03,
+              if (isDesktop)
+                AnimatedBuilder(
+                  animation: pulseAnim,
+                  builder:
+                      (_, __) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 5,
                         ),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: kGreen.withValues(alpha: .2)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 5,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              color: kGreen.withValues(
-                                alpha: .7 + pulseAnim.value * .3,
+                        decoration: BoxDecoration(
+                          color: kGreen.withValues(
+                            alpha: .07 + pulseAnim.value * .03,
+                          ),
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(
+                            color: kGreen.withValues(alpha: .2),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 5,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: kGreen.withValues(
+                                  alpha: .7 + pulseAnim.value * .3,
+                                ),
+                                shape: BoxShape.circle,
                               ),
-                              shape: BoxShape.circle,
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          const Text(
-                            'Open to work',
-                            style: TextStyle(
-                              color: kGreen,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                            const SizedBox(width: 6),
+                            const Text(
+                              'Open to work',
+                              style: TextStyle(
+                                color: kGreen,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-              ),
+                ),
             ],
           ),
           const SizedBox(height: 24),
@@ -1558,6 +1614,7 @@ class _ExperienceSection extends StatelessWidget {
             const SizedBox(width: 24),
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children:
                     kExperience
                         .map(
@@ -2225,6 +2282,7 @@ class _RevealSectionState extends State<_RevealSection>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _fade, _slide;
+  ScrollPosition? _scrollPosition;
 
   @override
   void initState() {
@@ -2242,7 +2300,20 @@ class _RevealSectionState extends State<_RevealSection>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final position = Scrollable.maybeOf(context)?.position;
+    if (_scrollPosition == position) return;
+
+    _scrollPosition?.removeListener(_checkVisibility);
+    _scrollPosition = position;
+    _scrollPosition?.addListener(_checkVisibility);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkVisibility());
+  }
+
+  @override
   void dispose() {
+    _scrollPosition?.removeListener(_checkVisibility);
     _ctrl.dispose();
     super.dispose();
   }
@@ -2259,23 +2330,17 @@ class _RevealSectionState extends State<_RevealSection>
 
   @override
   Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (_) {
-        _checkVisibility();
-        return false;
-      },
-      child: AnimatedBuilder(
-        animation: _ctrl,
-        builder:
-            (_, child) => Opacity(
-              opacity: _fade.value,
-              child: Transform.translate(
-                offset: Offset(0, _slide.value),
-                child: child,
-              ),
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder:
+          (_, child) => Opacity(
+            opacity: _fade.value,
+            child: Transform.translate(
+              offset: Offset(0, _slide.value),
+              child: child,
             ),
-        child: widget.child,
-      ),
+          ),
+      child: widget.child,
     );
   }
 }
@@ -2521,7 +2586,8 @@ class _NavDelegate extends SliverPersistentHeaderDelegate {
     BuildContext context,
     double shrinkOffset,
     bool overlapsContent,
-  ) => child;
+  ) => SizedBox.expand(child: child);
   @override
-  bool shouldRebuild(_NavDelegate old) => old.child != child;
+  bool shouldRebuild(_NavDelegate old) =>
+      old.child != child || old.height != height;
 }
