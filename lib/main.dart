@@ -752,6 +752,7 @@ class _NavBtnState extends State<_NavBtn> {
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
@@ -1945,6 +1946,7 @@ class _LinkChipState extends State<_LinkChip> {
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
     child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => openExternalUrl(widget.url),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
@@ -2234,6 +2236,7 @@ class _ContactRowState extends State<_ContactRow> {
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
     child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: widget.onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -2424,6 +2427,7 @@ class _PrimaryBtnState extends State<_PrimaryBtn> {
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
     child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: widget.onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -2487,6 +2491,7 @@ class _SecondaryBtnState extends State<_SecondaryBtn> {
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
     child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: widget.onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -2535,6 +2540,7 @@ class _TextBtnState extends State<_TextBtn> {
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
     child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
@@ -2572,6 +2578,7 @@ class _ChipBtnState extends State<_ChipBtn> {
     onEnter: (_) => setState(() => _hovered = true),
     onExit: (_) => setState(() => _hovered = false),
     child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: widget.onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
